@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const fs = require("fs");
 const { url } = require("inspector");
+const path = require("path");
 
 // YOUR CODE GOES IN HERE
 
@@ -16,7 +17,9 @@ app.post("/blogs", (req, res) => {
   if (!title || !content) {
     return res.status(400).send("Please include a title and content");
   }
-  fs.writeFileSync(title, content);
+  fs.writeFileSync(title, content, (err) => {
+    return res.statusCode(500).send("the file can not be written");
+  });
   res.status(201).send(`${title} is added`);
 });
 
@@ -49,5 +52,17 @@ app.delete("/blogs/:title", (req, res) => {
   fs.unlinkSync(postTitle);
   res.status(200).send("Blog post is deleted");
 });
+
+app.get("/blogs/:title", (req, res) => {
+  const title = req.params.title;
+  if (!fs.existsSync(title)) {
+    return res.status(400).send(`No blog post with ${title} title`);
+  }
+  const post = fs.readFileSync(title);
+
+  res.status(200).send(post);
+});
+
+app.get("/blogs", (req, res) => {});
 
 app.listen(3000);
