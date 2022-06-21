@@ -28,7 +28,8 @@ app.post("/weather", async (req, res) => {
       res.status(404).json({ weatherText: "City is not found!" });
     } else {
       const { main } = await response.json();
-      res.status(200).json(`${cityName}:${main.temp}`);
+
+      res.status(200).json({ cityName: cityName, temperature: main.temp });
     }
   } catch (err) {
     res.status(500).json({
