@@ -5,18 +5,27 @@ const request = supertest(app);
 
 describe("POST/weather", () => {
   describe("when a city name is not provided", () => {
-    const body = {};
+    const bodyData = [
+      { cityName: "" },
+      { cityName: null },
+      { cityName: undefined },
+      {},
+    ];
 
     //Respond with 400 status code
     it("should respond with a 400 status code ", async () => {
-      const response = await request.post("/weather").send(body);
-      expect(response.status).toBe(400);
+      for (const body of bodyData) {
+        const response = await request.post("/weather").send(body);
+        expect(response.status).toBe(400);
+      }
     });
 
     //Respond with a JSON
     it("should specify JSON in the content type header ", async () => {
-      const response = await request.post("/weather").send(body);
-      expect(response.headers["content-type"]).toMatch(/json/);
+      for (const body of bodyData) {
+        const response = await request.post("/weather").send(body);
+        expect(response.headers["content-type"]).toMatch(/json/);
+      }
     });
   });
 
@@ -38,8 +47,8 @@ describe("POST/weather", () => {
       });
     });
 
-    //When city is not valid
-    describe("when the city name is not valid", () => {
+    //When city is not found
+    describe("when the city name is not found", () => {
       const body = { cityName: "Iddsffhf" };
 
       //Respond with 404 status code
