@@ -45,6 +45,13 @@ describe("POST/weather", () => {
         const response = await request.post("/weather").send(body);
         expect(response.headers["content-type"]).toMatch(/json/);
       });
+      it("should return a Json object with cityName in string format and temperature in number format", async () => {
+        const response = await request.post("/weather").send(body);
+        expect(response.body).toMatchObject({
+          cityName: "Istanbul",
+          temperature: expect.any(Number),
+        });
+      });
     });
 
     //When city is not found
